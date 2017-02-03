@@ -4,7 +4,7 @@ MAINTAINER 'Jussi Heinonen<jussi.heinonen@ft.com>'
 ADD sh/* /
 
 RUN apk add -U py-pip && pip install --upgrade pip && \
-    apk add python-dev py-boto bash curl  && \
+    apk add python-dev py-boto bash curl bind-tools  && \
     pip install --upgrade awscli requests
 
 # Clean
