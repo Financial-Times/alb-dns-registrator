@@ -72,11 +72,11 @@ getRegion() {
 getStackName() {
   if [[ -z "${ARGS[--instance-id]}" ]]; then
     ARGS[--instance-id]=$(getInstanceId)
-    [[ "$?" -ne "0"  ]] || errorAndExit "Failed to resolve instance-id. Exit 1." 1
+    [[ "$?" -eq "0"  ]] || errorAndExit "Failed to resolve instance-id. Exit 1." 1
   fi
   if [[ -z "${ARGS[--region]}" ]]; then
     ARGS[--region]=$(getRegion)
-    [[ "$?" -ne "0"  ]] || errorAndExit "Failed to resolve region. Exit 1." 1
+    [[ "$?" -eq "0"  ]] || errorAndExit "Failed to resolve region. Exit 1." 1
   fi
   aws ec2 describe-tags --region ${ARGS[--region]} --filters "Name=resource-id,Values=${ARGS[--instance-id]}" --output text | grep aws:cloudformation:stack-name | awk '{print $5}'
   if [[ "$?" -ne "0" ]]; then
