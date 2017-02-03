@@ -66,7 +66,7 @@ getInstanceId() {
 }
 
 getRegion() {
-  ${CURL_CMD} http://169.254.169.254/latest/meta-data/public-hostname | cut -d '.' -f 2
+  ${CURL_CMD} http://169.254.169.254/latest/meta-data/hostname | cut -d '.' -f 2
 }
 
 getStackName() {
