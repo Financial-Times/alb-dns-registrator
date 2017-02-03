@@ -1,0 +1,36 @@
+#!/usr/bin/env python
+
+import argparse
+import requests
+import json
+import sys
+
+def doPost(checkString, data):
+    r = requests.post('https://dns-api.in.ft.com/v2/', data = json.dumps(data), headers=headers)
+    print r.text
+    if '[Error]' in r.text:
+        sys.exit(1)
+
+    if checkString in r.json():
+        sys.exit(1)
+
+parser = argparse.ArgumentParser(description='DNS API - Create DNS - Konstructor V2')
+parser.add_argument('-z', help='The zone to apply the DNS change.  E.g. ft.com (required)', required=True)
+parser.add_argument('-n', help='The name to apply the DNS change - this prepends to the zone.  E.g. mysite.in (required)', required=True)
+parser.add_argument('-r', help='Either a CNAME or IP Address entry.  To add multiple IP addresses to a DNS entry repeat this command with a new IP address. (required)', required=True)
+parser.add_argument('-t', help='The recommended TTL is 1440 minutes (1 day) - make it sensible (required)', required=True)
+parser.add_argument('-k', help='The API key to access the DNS service (required)', required=True)
+
+args = parser.parse_args()
+
+headers = {'user-agent': 'dns-create-script' ,
+           'Content-Type': 'application/json',
+           'x-api-key': args.k
+           }
+
+data = {'zone': args.z,
+        'name' : args.n,
+        'rdata' : args.r,
+        'ttl' : args.t
+        }
+doPost(args.n, data)

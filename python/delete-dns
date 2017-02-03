@@ -1,0 +1,37 @@
+#!/usr/bin/env python
+
+import argparse
+import requests
+import json
+import sys
+
+def doPost(data):
+    r = requests.delete('https://dns-api.in.ft.com/v2/', data = json.dumps(data), headers=headers)
+    print r.text
+    if '[Error]' in r.text:
+        sys.exit(1)
+
+parser = argparse.ArgumentParser(description='DNS API - DELETE DNS - Konstructor V2')
+parser.add_argument('-z', help='The zone to apply the DNS change.  E.g. ft.com (required)', required=True)
+parser.add_argument('-n', help='The name to apply the DNS change - this prepends to the zone.  E.g. mysite.in (required)', required=True)
+parser.add_argument('-r', help='If you wish to delete only a single IP address within a DNS entry - specify it here. (optional)')
+parser.add_argument('-k', help='The API key to access the DNS service (required)', required=True)
+
+args = parser.parse_args()
+
+headers = {'user-agent': 'dns-create-script' ,
+           'Content-Type': 'application/json',
+           'x-api-key': args.k
+           }
+
+if args.r != None:
+    data = {'zone': args.z,
+            'name' : args.n,
+            'rdata' : args.r
+            }
+else:
+    data = {'zone': args.z,
+            'name' : args.n
+            }
+
+doPost(data)
