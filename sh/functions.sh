@@ -7,6 +7,7 @@ cnameCreateOrUpdate() {
   FQDN="${1}.${2}"
   ALBDNS="${3}"
   TTL="${4}"
+
   if [[ "$(cnameExist ${FQDN})" ]]; then
     if [[ "$(cnameUpToDate ${FQDN} ${ALBDNS})" ]]; then
       info "Cname ${FQDN} is up to date"
@@ -25,6 +26,7 @@ cnameExist() {
   #ARG1: cname to lookup
   #returns: true if cname exists
   host -t cname $1 &>/dev/null && echo "true"
+
 }
 
 cnameUpToDate() {

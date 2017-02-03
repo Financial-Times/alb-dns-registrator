@@ -8,12 +8,12 @@
 #
 source $(dirname $0)/functions.sh || echo "$(date '+%x %X') $0: Failed to source functions.sh"
 
-DOMAIN="ft.com"
-TTL="60"
-
+ARGS[--zone]="ft.com"
+ARGS[--ttl]="60"
+ARGS[--interval]="300"
 
 usage() {
-  echo "USAGE: $0  [--debug=true] [--instance-id=i-0123abc] [--region=aws-region] --dynkey=sercret"
+  echo "USAGE: $0  [--debug=true] [--instance-id=i-0123abc] [--region=aws-region] [--zone=ft.com] [--ttl=60] [--interval=300] --dynkey=sercret"
   exit 0
 }
 
@@ -30,23 +30,26 @@ else
   WRITEALBCNAME="${STACKNAME}-write-alb-up"
   if [[ "${ARGS[--debug]}" ]]; then
     info "Stack name: ${STACKNAME}"
-    info "Read ALB CNAME: ${READALBCNAME}.${DOMAIN}"
-    info "Write ALB CNAME: ${WRITEALBCNAME}.${DOMAIN}"
+    info "Read ALB CNAME: ${READALBCNAME}.${ARGS[--zone]}"
+    info "Write ALB CNAME: ${WRITEALBCNAME}.${ARGS[--zone]}"
   fi
 fi
 
-READALB=$(getAlbDnsName ${STACKNAME}-read-alb)
-if [[ ${READALB} == '' ]]; then
-  errorAndExit "Failed to get DNS name for ${READALBCNAME}. Exit 1." 1
-else
-  [[ "${ARGS[--debug]}" ]] &&  info "DNS name for ${READALBCNAME}: ${READALB}"
-  cnameCreateOrUpdate ${READALBCNAME} ${DOMAIN} ${READALB} ${TTL}
-fi
+while true; do
+  READALB=$(getAlbDnsName ${STACKNAME}-read-alb)
+  if [[ ${READALB} == '' ]]; then
+    errorAndExit "Failed to get DNS name for ${READALBCNAME}. Exit 1." 1
+  else
+    [[ "${ARGS[--debug]}" ]] &&  info "DNS name for ${READALBCNAME}: ${READALB}"
+    cnameCreateOrUpdate ${READALBCNAME} ${ARGS[--zone]} ${READALB} ${ARGS[--ttl]}
+  fi
 
-WRITEALB=$(getAlbDnsName ${STACKNAME}-write-alb)
-if [[ ${WRITEALB} == '' ]]; then
-  errorAndExit "Failed to get DNS name for ${WRITEALBCNAME}. Exit 1." 1
-else
-  [[ "${ARGS[--debug]}" ]] &&  info "DNS name for ${WRITEALBCNAME}: ${WRITEALB}"
-  cnameCreateOrUpdate ${WRITEALBCNAME} ${DOMAIN} ${WRITEALB} ${TTL}
-fi
+  WRITEALB=$(getAlbDnsName ${STACKNAME}-write-alb)
+  if [[ ${WRITEALB} == '' ]]; then
+    errorAndExit "Failed to get DNS name for ${WRITEALBCNAME}. Exit 1." 1
+  else
+    [[ "${ARGS[--debug]}" ]] &&  info "DNS name for ${WRITEALBCNAME}: ${WRITEALB}"
+    cnameCreateOrUpdate ${WRITEALBCNAME} ${ARGS[--zone]} ${WRITEALB} ${ARGS[--ttl]}
+  fi
+  sleep ${ARGS[--interval]}
+done
