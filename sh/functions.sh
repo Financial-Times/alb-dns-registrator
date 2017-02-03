@@ -101,7 +101,13 @@ processCliArgs() {
     if [[ "$(echo ${each} | grep '=' >/dev/null ; echo $?)" == "0" ]]; then
       key=$(echo ${each} | cut -d '=' -f 1)
       value=$(echo ${each} | cut -d '=' -f 2)
-      [[ "${ARGS[--debug]}" ]] &&  info "Processing Key-Value argument ${key}=${value}"
+      if [[ "${ARGS[--debug]}" ]]; then
+        if [[ "${key}" == "--dynkey" ]]; then
+          info "Processing Key-Value argument ${key}=${value:0:4}********************"
+        else
+          info "Processing Key-Value argument ${key}=${value}"
+        fi
+      fi
       ARGS[${key}]="${value}"
     else
       errorAndExit "Agument must contain = character as in --key=value"
