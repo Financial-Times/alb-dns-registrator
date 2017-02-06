@@ -54,6 +54,10 @@ info() {
 getAlbDnsName() {
   #ARG1: name of the ALB to LOOKUP
   #returns: ALB DNS name
+  if [[ -z "${ARGS[--region]}" ]]; then
+    ARGS[--region]=$(getRegion)
+    [[ "$?" -eq "0"  ]] || errorAndExit "Failed to resolve region. Exit 1." 1
+  fi
   if [[ -z $1 ]]; then
     errorAndExit "${FUNCNAME}: ALB name must be provided. Exit 1." 1
   else
