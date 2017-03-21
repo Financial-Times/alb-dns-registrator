@@ -9,11 +9,11 @@
 source $(dirname $0)/functions.sh || echo "$(date '+%x %X') $0: Failed to source functions.sh"
 
 ARGS[--zone]="ft.com"
-ARGS[--ttl]="60"
+ARGS[--ttl]="300"
 ARGS[--interval]="300"
 
 usage() {
-  echo "USAGE: $0  [--debug=true] [--instance-id=i-0123abc] [--region=aws-region] [--zone=ft.com] [--ttl=60] [--interval=300] --dynkey=sercret"
+  echo "USAGE: $0  [--debug=true] [--instance-id=i-0123abc] [--region=aws-region] [--zone=ft.com] [--ttl=300] [--interval=300] --dynkey=sercret"
   exit 0
 }
 
