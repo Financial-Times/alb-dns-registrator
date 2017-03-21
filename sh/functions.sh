@@ -114,7 +114,7 @@ processCliArgs() {
       fi
       ARGS[${key}]="${value}"
     else
-      errorAndExit "Agument must contain = character as in --key=value"
+      errorAndExit "Argument must contain = character as in --key=value"
     fi
   done
 }
